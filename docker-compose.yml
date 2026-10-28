@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:15
+    container_name: retail_db_container
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: crm
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  etl_app:
+    build: .
+    container_name: etl_python_container
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  postgres_data:
